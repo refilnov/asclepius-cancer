@@ -1,0 +1,28 @@
+steps:
+  # Step 1: Build Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA", "."]
+
+  # Step 2: Push Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA"]
+
+  # Step 3: Deploy image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "cancer"
+      - "--image"
+      - "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA"
+      - "--platform"
+      - "managed"
+      - "--region"
+      - "asia-southeast2"
+      - "--allow-unauthenticated"
+
+images:
+  - "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA"
+
+logsBucket: "gs://asclepius-risqi/log_cloudbuild_cancer_test" # Menyimpan log build ke bucket ini
