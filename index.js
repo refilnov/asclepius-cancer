@@ -6,8 +6,10 @@ const tf = require("@tensorflow/tfjs-node");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 8080;
 const HOST = process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
 
