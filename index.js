@@ -15,7 +15,7 @@ const HOST = process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
 admin.initializeApp();
 const db = admin.firestore();
 
-const bucketName = "asclepius-risqi";
+const bucketName = "asclepius-khoirul";
 const modelFolder = "models"; // Nama folder di dalam bucket
 const localModelPath = "./temp-model"; // Folder lokal untuk menyimpan model
 
