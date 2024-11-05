@@ -101,7 +101,7 @@ app.post("/predict", upload.single("image"), async (req, res) => {
     // Simpan hasil prediksi ke Firestore
     await db.collection("predictions").doc(id).set(responseData);
 
-    res.json({
+    res.status(201).json({
       status: "success",
       message: "Model berhasil melakukan prediksi",
       data: responseData,
@@ -134,7 +134,7 @@ app.use((error, req, res, next) => {
       message: "Payload content length greater than maximum allowed: 1000000",
     });
   }
-  res.status(400).json({ status: "fail", message: error.message });
+  // res.status(400).json({ status: "fail", message: error.message });
 });
 
 // Jalankan server
