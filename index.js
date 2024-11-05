@@ -103,7 +103,7 @@ app.post("/predict", upload.single("image"), async (req, res) => {
 
     res.status(201).json({
       status: "success",
-      message: "Model berhasil melakukan prediksi",
+      message: "Model is predicted successfully",
       data: responseData,
     });
   } catch (error) {
@@ -120,7 +120,7 @@ app.get("/predict/histories", async (req, res) => {
       history: doc.data(),
     }));
 
-    res.json({ status: "success", data: histories });
+    res.status(200).json({ status: "success", data: histories });
   } catch (error) {
     res.status(500).json({ status: "fail", message: "Gagal mengambil data riwayat prediksi" });
   }
