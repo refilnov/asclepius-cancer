@@ -1,11 +1,8 @@
 const express = require("express");
 const multer = require("multer");
-const { Storage } = require("@google-cloud/storage");
 const admin = require("firebase-admin");
 const tf = require("@tensorflow/tfjs-node");
 const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
-const path = require("path");
 const cors = require("cors");
 
 const app = express();
@@ -13,61 +10,33 @@ app.use(cors());
 const PORT = process.env.PORT || 8080;
 const HOST = process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
 
-// Inisialisasi Firebase tanpa service account (Cloud Run akan menggunakan Workload Identity)
 admin.initializeApp();
 const db = admin.firestore();
 
-const bucketName = "asclepius-khoirul";
-const modelFolder = "models"; // Nama folder di dalam bucket
-const localModelPath = "./temp-model"; // Folder lokal untuk menyimpan model
+let model;
 
-let model; // Untuk menyimpan model setelah dimuat
-const storage = new Storage(); // Inisialisasi Google Cloud Storage
-
-// Fungsi untuk mengunduh seluruh folder model dari Cloud Storage
-// Fungsi untuk mengunduh seluruh folder model dari Cloud Storage
-async function downloadModelFolder() {
-  const [files] = await storage.bucket(bucketName).getFiles({ prefix: modelFolder });
-
-  // Buat folder lokal jika belum ada
-  if (!fs.existsSync(localModelPath)) {
-    fs.mkdirSync(localModelPath);
+async function loadModelFromCloudStorage() {
+  try {
+    const modelUrl = "https://storage.cloud.google.com/asclepius-khoirul/models/model.json";
+    model = await tf.loadGraphModel(modelUrl);
+    console.log("Model loaded successfully");
+  } catch (error) {
+    console.error("Error loading model:", error);
+    throw error; // Rethrow error to handle it in the calling function if needed
   }
-
-  await Promise.all(
-    files.map((file) => {
-      const localFilePath = path.join(localModelPath, path.basename(file.name)); // Simpan dengan nama file asli
-      return file.download({ destination: localFilePath });
-    })
-  );
-  console.log("Model folder downloaded successfully");
 }
 
-// Fungsi untuk memuat model dari folder lokal
-async function loadModelFromFolder() {
-  model = await tf.loadGraphModel(`file://${localModelPath}/model.json`); // Pastikan jalur file model.json
-  console.log("Model loaded successfully");
-}
-
-// Fungsi utama untuk mengunduh dan memuat model
 async function initializeModel() {
-  // Buat folder lokal jika belum ada
-  if (!fs.existsSync(localModelPath)) {
-    fs.mkdirSync(localModelPath);
+  try {
+    await loadModelFromCloudStorage();
+    console.log("Model initialized successfully");
+  } catch (error) {
+    console.error("Error initializing model:", error);
   }
-
-  // Unduh folder model
-  await downloadModelFolder();
-  // Muat model dari folder lokal
-  await loadModelFromFolder();
 }
 
-// Muat model pada startup
-initializeModel()
-  .then(() => {
-    console.log("Model initialized successfully");
-  })
-  .catch((error) => console.error("Error initializing model:", error));
+// Load model on startup
+initializeModel();
 
 // Konfigurasi multer untuk upload file gambar
 const upload = multer({
