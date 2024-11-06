@@ -21,7 +21,7 @@ steps:
       - "--region"
       - "asia-southeast2"
       - "--allow-unauthenticated"
-      - "--service-account=projects/$PROJECT_ID/serviceAccounts/$SERVICE_ACCOUNT_EMAIL"
+      - "--service-account=$SERVICE_ACCOUNT_EMAIL"
 
 images:
   - "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA"
