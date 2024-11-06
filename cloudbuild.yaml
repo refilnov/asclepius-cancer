@@ -20,7 +20,7 @@ steps:
       - "managed"
       - "--region"
       - "asia-southeast2"
-      - "--allow-unauthenticated",
+      - "--allow-unauthenticated"
       - "--service-account=$SERVICE_ACCOUNT_EMAIL"
 
 images:
