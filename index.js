@@ -42,7 +42,7 @@ async function loadModelFromBucket() {
 
 async function initializeModel() {
   try {
-    await loadModelFromBucket()();
+    await loadModelFromBucket();
     console.log("Model initialized successfully");
   } catch (error) {
     console.error("Error initializing model:", error);
