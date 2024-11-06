@@ -2,8 +2,15 @@ const express = require("express");
 const multer = require("multer");
 const admin = require("firebase-admin");
 const tf = require("@tensorflow/tfjs-node");
+const { Storage } = require("@google-cloud/storage");
 const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
+
+// Ganti dengan nama bucket dan file yang sesuai
+const bucketName = "asclepius-khoirul";
+const fileName = "models/model.json";
+
+const storage = new Storage();
 
 const app = express();
 app.use(cors());
@@ -15,20 +22,27 @@ const db = admin.firestore();
 
 let model;
 
-async function loadModelFromCloudStorage() {
+async function loadModelFromBucket() {
   try {
-    const modelUrl = "gs://asclepius-khoirul/models/model.json";
-    model = await tf.loadGraphModel(modelUrl);
-    console.log("Model loaded successfully");
+    // Mendapatkan objek file dari bucket
+    const file = storage.bucket(bucketName).file(fileName);
+
+    // Membuat stream baca dari file
+    const readStream = file.createReadStream();
+
+    // Memuat model dari stream menggunakan TensorFlow.js
+    const model = await tf.loadGraphModel(tf.io.node.fetch(readStream));
+
+    console.log("Model berhasil dimuat");
+    return model;
   } catch (error) {
-    console.error("Error loading model:", error);
-    throw error; // Rethrow error to handle it in the calling function if needed
+    console.error("Error saat memuat model:", error);
   }
 }
 
 async function initializeModel() {
   try {
-    await loadModelFromCloudStorage();
+    await loadModelFromBucket()();
     console.log("Model initialized successfully");
   } catch (error) {
     console.error("Error initializing model:", error);
