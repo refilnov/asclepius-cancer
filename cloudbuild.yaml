@@ -20,8 +20,8 @@ steps:
       - "managed"
       - "--region"
       - "asia-southeast2"
-      - "--allow-unauthenticated,
-      --service-account=$SERVICE_ACCOUNT_EMAIL"
+      - "--allow-unauthenticated",
+      - "--service-account=$SERVICE_ACCOUNT_EMAIL"
 
 images:
   - "asia-southeast2-docker.pkg.dev/$PROJECT_ID/cancer/cancer-model:$SHORT_SHA"
