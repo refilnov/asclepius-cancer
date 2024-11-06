@@ -17,7 +17,7 @@ let model;
 
 async function loadModelFromCloudStorage() {
   try {
-    const modelUrl = "https://storage.cloud.google.com/asclepius-khoirul/models/model.json";
+    const modelUrl = "gs://asclepius-khoirul/models/model.json";
     model = await tf.loadGraphModel(modelUrl);
     console.log("Model loaded successfully");
   } catch (error) {
