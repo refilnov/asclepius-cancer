@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 
 // Ganti dengan nama bucket dan file yang sesuai
-// const bucketName = "asclepius-khoirul";
+// const bucketName = "asclepius-refilnovianto";
 // const fileName = "models/model.json";
 
 // const storage = new Storage();
