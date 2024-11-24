@@ -23,7 +23,7 @@ const db = admin.firestore();
 let model;
 
 async function loadModelFromFolder() {
-  model = await tf.loadGraphModel(`https://storage.googleapis.com/asclepius-khoirul/models/model.json`); // Pastikan jalur file model.json
+  model = await tf.loadGraphModel(`https://storage.googleapis.com/asclepius-refilnovianto/submissions-model/model.json`); // Pastikan jalur file model.json
   console.log("Model loaded successfully");
 }
 
